@@ -1,0 +1,128 @@
+---
+title: "Note 3"
+author: "Haojie Liu"
+date: "2023-10-05"
+output: pdf_document
+---
+
+## Random Numbers Generate
+
+TRNG true Random number generator
+PRNG
+
+Math formulas random # table
+
+Random number $\to$ u $\to Unif(0,1)$ 
+`runif(n)``
+
+### Inverse Transformation method
+
+Wish to generate $x \sim F_X(x)$
+
+$$u = F_X(x) \sim Unif(0,1)$$
+
+$$Y = F^{-1}_X(u)= inf\{y:F_X(y)=u\}$$
+
+$$y \sim F_Y(y)$$
+
+show $F_x(x)\sim Unif(0,1)$
+
+
+$$F_y(x) = P_Y(Y< x) = P_Y(F^{-1}(u) < x) = P_U(U <F_X(x)) = \int^{F_X(x)}_0 1 dt = F_X(x)$$
+
+
+$$f(u) = \frac{1}{1-0}$$
+
+$$F(u) = \frac{u-a}{b-a}$$
+
+**Ex:**
+
+$$x\sim Unif(a,b)$$
+
+$$u = F_X(x) = \frac{x-a}{b-a}$$
+
+$$a<x<b$$
+
+$$x = u(b-a)+a= F^{-1}(u)$$
+$$u_n \sim Unif(0,1)$$
+
+$$x_i = u_i(b-a)+a$$
+
+
+### Exponential Prob Function
+
+$$f(x) = \lambda e^{-\lambda x}$$
+$$F(x) = 1-e^{-\lambda x}$$
+
+$$u = 1-e^{-\lambda x}$$
+$$x = \frac{ln(1-u)}{\lambda} = \frac{ln(u)}{\lambda}$$
+
+Since u and 1-u belong to the same distribution then we can have only u inside the natrual log.
+
+$$1-u \sim Unif(0,1)$$
+
+
+### Polynomial Density
+
+$$f(x) = k*x^{k-1}$$
+$$F_X(x) = \int^x_0kt^{k-1}dt = x^k$$
+
+$$x = u^{\frac{1}{k}}$$
+
+### Discrete Case
+
+1. Sort Sample in order
+2. Draw the CDF of the discrete data
+
+$$F^{-1}(u) = inv\{x:F_X(x)=u\}$$
+$$F^{-1}(u) = inv\{x_{(i)}:F_X(x_{i-1}) < u \le F(x_i)\}$$
+
+$$P(F_X(x_{i-1}) < U \le F_X(x_i))$$
+
+$$= F_X(x_i) - F_X(x_{i-1}) = P(x_1) + P(x_2) + ... +P(x_i) - P(x_1) - P(x_2) - ... - P(x_{i-1}) = P(x_i)$$
+
+**Ex:**
+
+$x: 0; 1;2$
+$P(x):1/4,2/4,1/4$
+
+Generate $u\sim Unif(0,1)$
+
+If $u \le \frac{1}{4} \to 0$, $\frac{1}{4} < u \le \frac{3}{4}\to 1$, $\frac{3}{4} < u\to 2$
+
+
+### Geometric 
+
+$$P(x) = q^xp, q=1-p$$
+
+$$F_X(x) = \Sigma^x_{t=0}q^tp=1-q^{x+1}$$
+
+Generate $u\sim Unif(0,1)$\newline
+if $F_x(x-1) < u \le F_X(x)$
+
+$$1-q^x < u \le 1-q^{x-1}$$
+
+$$q^x > 1-u \ge q^{x+1}$$
+$$x log(q) > log(1-u) \ge (x+1)log(q)$$
+
+$$x < \frac{log(1-u)}{log(q)} \le x+1$$
+
+$$\frac{log(1-u)}{log(q)} = x+1$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

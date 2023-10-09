@@ -1,0 +1,100 @@
+---
+title: "Note 1"
+author: "Haojie Liu"
+date: "2023-09-28"
+output: pdf_document
+---
+
+## Conditional prob function
+
+$$P(Y|X=x) = \frac{P_{xy}(x,y)}{P_X(x)}$$
+
+$$P(X|Y=y) = \frac{P_{xy}(x,y)}{P_Y(y)}$$
+
+$$P_{xy}(x,y) = P(Y|X=x)*P_X(x) = P(X|Y=y)*P_Y(y)$$
+
+
+**With all of these cases above, we state that Y and X are independent**
+
+
+
+$$P(Y|X=x)=P(y)$$
+$$P(X|Y=y)=P(x)$$
+$$\to P(x,y)=P(x)P(y)$$
+
+$$F_{xy}(x,y) = F_X(x)F_Y(y)$$
+
+$$E(X) = \Sigma XP_X(x)$$
+
+$$Var(X) = E[(X-\mu)^2] = E(X^2)-E(X)^2$$
+
+$$E(X^3) : skewness$$ 
+$$E(X^4) : kurtosis$$
+**Smaller $E(X^4)$ will have a flatter shape of the distribution**
+
+$$g(x|r) = x^r$$
+$$E[g(x|r)]$$
+
+$$g(x)=e^x$$
+$$g(x,y)=log(x)-log(y)$$
+
+## Bernulli
+
+$$x=\{0,1\}$$
+
+$$P(x) = p^x(1-p)^{1-x}$$
+$$X_1  \sim Ber(p)$$
+$$X_2  \sim Ber(p)$$
+$$X_n  \sim Ber(p)$$
+
+$$\Sigma X_i \sim Ber(p)$$
+
+
+as $p\to 0$ and $n\to \infty$
+
+$$Y\sim Pos(\lambda)$$
+$$\lambda = np$$
+$$E(Y) = Var(Y) = \lambda$$
+
+$$F_x(x)=P(X\le x)=1-(1-p)^x$$
+
+## memoryless
+
+$$P(X>a+b|X>a) = P(X>b)$$
+$$ = \frac{P(X>a+b)}{P(X>a)} = \frac{1-P(X\le a+b)}{1-P(X\le a)}$$
+
+$$ = \frac{(1-p)^{a+b}}{(1-p)^a} = (1-p)^b=P(X>b)$$
+
+## negative binomial
+
+$$\Sigma^r_1 X_i \sim NB(r,p)$$
+
+## uniform
+
+$$f(x) = \frac{1}{b-a}$$
+$$a \le x \le b$$
+
+I(statement)
+
+$$f(x) = \frac{I(a\le x\le b)}{b-a}$$
+
+## Exponential
+
+X: the wait time (discrete) between succssive events from a possion process
+
+**Example:**
+
+$$\lambda = 10calls/hour$$
+$$\frac{1}{\lambda} = calls/hour = 6 min/call$$
+
+Let $\lambda$ be the expected # of class during a one-minute interval. If $\lambda = 2$, the expected # of calls in 1 minute is 2 calls will be $2 \times 2 = 4$
+
+
+
+$N_x$ the # of calls in x-minute interval $N_x \sim Possion(\lambda x)$
+
+
+
+
+
+

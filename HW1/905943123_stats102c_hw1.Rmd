@@ -1,0 +1,34 @@
+---
+title: "HW1"
+author: "Haojie Liu"
+date: "2023-10-05"
+output: pdf_document
+---
+
+
+### Problem 1: Suppose X is a geometric random variable with $p = 0.3$, determine the value of k such that $P(X \le k) \simeq 0.8$
+
+$$X\sim Geometric(0.3)$$
+$$P(X\le k) = 1-(1-p)^k\simeq 0.8$$
+$$1-0.7^k \simeq 0.8$$
+$$0.7^k \simeq 0.2$$
+$$k = \frac{log(0.2)}{log(0.7)}$$
+
+```{r}
+print(paste("k =",log(0.2)/log(0.7)))
+```
+
+
+### Problem 2: If two random variables, X and Y, are independent, show Var(XY) in terms of the expected values and variances of X and Y.
+
+
+
+
+
+
+
+
+
+
+
+
