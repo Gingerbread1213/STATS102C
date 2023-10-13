@@ -1,0 +1,124 @@
+---
+title: "Note 4"
+author: "Haojie Liu"
+date: "2023-10-10"
+output: pdf_document
+---
+
+From last time
+$$F_X(x), u\sim unif(0,1)$$
+
+$$F^{-1}(u)= inf\{x: F_X(x) = u\}$$
+
+$$F^{-1}(u) = inf\{x_i:F_X(x_{i-1}) < u\le F_X(x_i)\}$$
+
+
+Geometric distribution $x = 0,1,...$
+
+$$F^{-1}(u) = inf\{x:F_X(x) < u \le F_X(x+1)\}$$
+
+$$\frac{log(u)}{log(q)}\le x+1$$
+ceiling function
+
+$$\lceil\frac{log(u)}{log(q)}\rceil - 1=x$$
+
+Log distribution function
+
+$$P(x) = \frac{\theta^x}{-log_{10}(1-\theta)x}; x =1,2,...;0<\theta<1$$
+
+number of items purchased by a customer in a unit of time.
+
+
+$$F(x) = P(1)+P(2)+...+P(x)$$
+
+$$F_X = \begin{pmatrix}F(1)\\F(2)\\:\\F(x)\\F(x+1)\\:\end{pmatrix} = \begin{pmatrix}I(u\ge F(1))\\I(u\ge F(2))\\:\\I(u\ge F(x))\\I(u\ge F(x))\\:\end{pmatrix} = I_F$$
+
+Generate $u\sim Unif(0,1)$ cheich if $u<F_X(x)$ by order $x = 1,2,...$ until $u\ge F_X(x) \to$ return x
+
+**Ex:**\newline
+
+if $u<F(1)$
+
+$$I_F = \begin{pmatrix}F\\F\\F\\:\\F\\F\end{pmatrix}$$ 
+$$sum(I_F)= 0 + 1$$
+
+if $u<F(4)$
+
+$$I_F = \begin{pmatrix}T\\T\\T\\:\\F\\F\end{pmatrix}$$ 
+$$sum(I_F)= 3 + 1$$
+
+$$F_X(x) = \Sigma^x_{k=1}P(x) = F(x-1) +P(x)$$
+$$u\sim unif(0,1)$$
+
+$$while(u>F_X(x))\{\\  
+  x = x+1\\
+  Fx = Fx[x-1] + px
+  \}\\return x$$
+```{r}
+logdist <- function(u, Fx){
+  
+  while(u>Fx){
+    x <- x+1
+    newFx <- Fx + px
+  }
+  return(x)
+}
+```
+
+Recursive equation
+
+$$P(x) = rec(P(x-1))$$
+
+$$P(x=1)= \frac{\theta}{-log(1-\theta)}$$
+$$P(x=2)= \frac{\theta^2}{-log_{10}(1-\theta)2} = \frac{\theta}{-log_{10}(1-\theta)}\frac{\theta}{2} = P(x=1)\frac{\theta}{2}$$
+$$P(x=3)= \frac{\theta^3}{-log_{10}(1-\theta)3} = \frac{\theta}{-log_{10}(1-\theta)}\frac{\theta}{2}\frac{2\theta}{3} = P(x=2)\frac{2\theta}{3}$$
+$$P(x) = P(x-1)\frac{(x-1)\theta}{x}$$
+
+$$rlog(\theta)\{\\ x = 1\\ p(x) = \frac{\theta}{-log_{10}(1-\theta)}=F(x)\\u\sim unif(0,1)\\while(u>F_X(x))\{\\x = x+1\\P(x)=P(x-1)\frac{(x-1)\theta}{x}\\F(x)=F(x-1)+P(x)\\\}\\return(x)\}$$
+
+```{r}
+logdist <- function(theta,n){
+  x <- 1
+  px <- theta/-log((1-theta),10)
+  Fx <- px
+  u <- runif(n)
+  while(u>Fx){
+    x <- x+1
+    newpx <- px*((x-1)*theta)/x
+    newFx <- Fx + px
+  }
+  return(x)
+}
+
+```
+
+
+Some of the function that I can't be able to use the inverse CDF method, since it does not have a close form.
+
+$$f(x) = \frac{1}{(2\pi)^2}e^{-\frac{x^2}{2}}$$
+This is a example
+
+
+## Acceptance-Rejection Method (indirect method)
+
+We will find a g(x) to generate samples
+
+$$g(x)\to x_1^{g}...x_n^{g}$$
+
+Then will create a mechanism to determine if $x_i^g$ is accepted $x\sim f(x)$
+
+Constraints:
+
+$$1. f(x)> 0, g(x)>0$$
+$$2. \frac{f(x)}{g(x)} \le M_{const} \to f(x)\le g(x)M_{const}; \forall x$$
+
+$$x_g \sim g(x); x_f \sim f(x)$$
+
+if $\frac{f(x_g)}{Mg(x_g)}$ is small it will be less likely from $f(x)$
+if $\frac{f(x_g)}{Mg(x_g)}$ is large it will be more likely from $f(x)$
+
+
+
+
+
+

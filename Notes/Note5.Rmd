@@ -1,0 +1,93 @@
+---
+title: "Note 5"
+author: "Haojie Liu"
+date: "2023-10-12"
+output: pdf_document
+---
+
+From last time:
+
+$$\frac{f(x)}{g(x)} \le M \to f(x) \le Mg(x);\forall x$$
+if $u < \frac{f(x_g)}{Mg(x_g)}$ accept $x_g$ as $x_f$;
+if $u \ge \frac{f(x_g)}{Mg(x_g)}$ reject $x_g$ as $x_f$
+
+$$f(x) = \frac{P(X\; accepted\; in(x, x+\triangle x))}{\triangle x} = \frac{P(x\in (x, x+\triangle x))}{\triangle x}$$
+$$P(x\in (x, x+\triangle x)) = \triangle f(x)$$
+
+$$P(x\in (x, x+\triangle x)) = \frac{number\; of\; points\; survived \;in (x, x+\triangle x)}{accross\;the\;all\;bins,\;the\;number\; of\; points \;survived}$$
+
+Total # of points in $(x,x+\triangle x)$:
+
+Assume that we have N as the total number of sample,
+
+$$N * g(x)*\triangle x$$
+$$P(acceptance\;for\;x\in(x, x+\triangle x)) = \frac{f(x)}{Mg(x)}$$
+$$N * g(x)*\triangle x\frac{f(x)}{Mg(x)} = \frac{N}{M}\triangle xf(x)$$
+
+Total $ of points survived:
+$$\Sigma_{all\;bins}\frac{N}{M}\triangle xf(x) = \frac{N}{M}\Sigma_{all\;bins}\triangle xf(x) = \frac{N}{M}$$
+
+Finally:
+
+$$P(x\in (x, x+\triangle x)) = \frac{\frac{N}{M}\triangle xf(x)}{\frac{N}{M}} = \triangle xf(x)$$
+
+
+
+$$0<\frac{f(x)}{Mg(x)} \le 1$$
+$$\frac{f(x)}{g(x)} \le M$$
+$$M\ge\frac{f(x)}{g(x)}\to M\ge Max(\frac{f(x)}{g(x)})$$
+**Ex:**
+$$x\sim f(x)$$
+$$f(x)=sin(x); 0<x<\frac{\pi}{x}$$
+$$g(x) = \frac{1}{\frac{\pi}{2}-0} = \frac{2}{\pi}$$
+$$u_2\sim unif(0,1)$$
+$$M = max(\frac{f(x)}{g(x)})$$
+$$x^{(g)} = u(b-a)+u = u_1\frac{\pi}{2}$$
+
+$$if\; u_2<\frac{f(x^{(g)})}{Mg(x^{(g)})}; accept\;X_g$$
+
+To generate random normal distribution:
+
+$$f(z) = \frac{1}{(2\pi)^\frac{1}{2}}e^{-\frac{z^2}{2}}$$
+$$x=|z|$$
+$$f(x) = 2*\frac{1}{(2\pi)^\frac{1}{2}}e^{-\frac{x^2}{2}} = (\frac{2}{\pi})^\frac{1}{2}e^\frac{x^2}{2};x\ge 0$$
+$$g(x) = e^{-x}; X\sim exp(\lambda=1)$$
+$$M=max(\frac{f(x)}{g(x)})$$
+$$\frac{f(x)}{g(x)} = \frac{(\frac{2}{\pi})^\frac{1}{2}e^\frac{x^2}{2}}{e^{-x}}=(\frac{2}{\pi})^\frac{1}{2}e^{\frac{x^2}{2}-x}$$
+$$Max_x((\frac{2}{\pi})^\frac{1}{2}e^{\frac{x^2}{2}-x}) \to Min_x(\frac{x^2}{2}-x)$$
+$$x\to x^* = 1$$
+$$M=max(\frac{f(x)}{g(x)}) = (\frac{2}{\pi})^\frac{1}{2}e^{\frac{1}{2}} = 1.315$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

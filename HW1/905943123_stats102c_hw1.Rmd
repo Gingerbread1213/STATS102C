@@ -15,14 +15,172 @@ $$0.7^k \simeq 0.2$$
 $$k = \frac{log(0.2)}{log(0.7)}$$
 
 ```{r}
-print(paste("k =",log(0.2)/log(0.7)))
+paste("k =",log(0.2)/log(0.7))
 ```
 
 
 ### Problem 2: If two random variables, X and Y, are independent, show Var(XY) in terms of the expected values and variances of X and Y.
 
+$$Var(XY) = E((XY)^2) - (E(XY))^2 = E(X^2)E(Y^2) - E(X)^2E(Y)^2$$
+$$Var(XY) = (Var(X)+E(X)^2)(Var(Y)+E(Y)^2)-E(X)^2E(Y)^2$$
+$$Var(XY) = Var(X)Var(Y)+Var(X)E(Y)^2+Var(Y)E(X)^2+E(X)^2E(Y)^2-E(X)^2E(Y)^2$$
+$$Var(XY) = Var(X)Var(Y)+Var(X)E(Y)^2+Var(Y)E(X)^2$$
+
+### Problem 3: At a call center in Los Angeles County, calls come in at an average rate of four calls per minute. Assume that the wait time from one call to the next follows the exponential distribution. Here we concern only with the rate of calling in and ignore the time spent on the phone. Also, assume that the waiting time between calls is independent. That is, a long delay between two calls doesn’t make a shorter waiting period for the next call.
+
+$$X \sim exp(4)$$
+$$N_X\sim Possion(x4)$$
+
+(a) What is the average time between two successive calls?
+
+$$E(X) = \frac{1}{\lambda} = \frac{1}{4}min$$
+
+(b) What is the probability that exactly five calls occur within a minute?
+
+$$P(N_X = 5) = \frac{e^{-4}4^5}{5!}$$
+
+```{r}
+
+paste("The probability that exactly five calls occur within a minute is", exp(-4)*(4^5)/factorial(5))
+
+```
+
+(c) What is the probability that less than five calls occur within a minute?
+
+$$P(N_X < 5) = \Sigma^4_{i=0}\frac{e^{-4}4^i}{i!}$$
+
+```{r}
+
+result <- 0
+for(i in 0:4){
+  
+  result <- result + exp(-4)*(4^i)/factorial(i)
+  
+}
+
+paste("The probability that less than five calls occur within a minute is", result)
+
+```
 
 
+(d) After a call is received, what is the probability that the next call occurs in less than 5 seconds?
+
+$$x = \frac{5}{60} = \frac{1}{12}$$
+$$P(X < \frac{1}{12}) = 1-e^{-4 \frac{1}{12}}$$
+
+```{r}
+
+paste("The probability that the next call occurs in less than 5 seconds is", 1-exp(-4/12))
+
+```
+
+
+(e) Use rexp function in R to generate 1000 samples with the $\lambda$ you derived from (d), and then draw a EDF plot with ecdf function. Finally, add confidence interval to your EDF plot.
+
+```{r}
+sample <- rexp(1000, 4)
+plot(ecdf(sample))
+```
+
+
+
+Problem 4: Let X be a continuous random variable with cumulative density function F(x). Let $u \sim Unif[0,1]$.
+
+(a) Let $Y=F^{-1}$. Show that $P(Y \le x)=F(x)$.
+
+$$P(F^{-1}(U) \le x) = P(U\le F(x)) = \int^{F_X(x)}_0 1dt = F(x)$$
+
+Therefore $P(Y \le x)=F(x)$
+
+(b) Show that $F(x) \sim Unif[0,1]$.
+
+
+
+### Problem 5: Let $X \sim$ two-parameter $Exponential(\lambda, \eta)$ with probability density function $$f(x) = \lambda e-\lambda(x-\eta), x \ge \eta$$ where $\lambda$ and $\eta$ are positive constant.
+
+(a) Find the cumulative density function F(x)
+
+$$F(x) = 1-e^{-\lambda(x-\eta)}$$
+
+(b) Write an algorithm using the CDF inverse method to generate random numbers from Exponential$(\lambda, \eta)$
+
+$$u = 1-e^{-\lambda(x-\eta)}$$
+$$ln(1-u) = -\lambda(x-\eta)$$
+$$\frac{ln(1-u)}{\lambda} = \eta-x$$
+$$\eta - \frac{ln(1-u)}{\lambda} = x$$
+
+```{r}
+
+sample_exp <- function(lambda, eta, n){
+  
+  u <- runif(n)
+  return(eta - ((log(1-u))/lambda))
+}
+
+```
+
+
+(c) Write R code to generate 10,000 random numbers and plot the histogram. You may set $\lambda =$the last digit of your UID and $\eta =$ the second last digit. (If the digit is 0, please have it plus 1)
+
+```{r}
+result <- sample_exp(3,2,10000)
+```
+
+
+(d) Compare the sample quantiles with the theoretical quantiles.
+
+```{r}
+
+# Theoretical quantiles
+p <- seq(0, 1, by = 0.01)
+theoretical_quantiles <- 2 - log(1 - p) / 3
+
+# Sample quantiles
+sample_quantiles <- quantile(result, probs = p)
+
+# QQ-plot
+plot(theoretical_quantiles, sample_quantiles, main = "QQ-Plot",
+     xlab = "Theoretical Quantiles", ylab = "Sample Quantiles", pch = 16, col = "blue")
+abline(a = 0, b = 1, col = "red", lwd = 2)
+
+
+```
+
+
+
+### Problem 6: The Pareto distribution function has a probability density as shown below with the shape parameter $\alpha$ and the scale parameter $\beta$.
+$$\frac{\alpha\beta^\alpha}{x^{\alpha+1}}$$
+$$x > \beta$$
+(a) Find the cumulative density function F(x)
+
+$$F(x) = \int^x_\beta\frac{\alpha\beta^\alpha}{t^{\alpha+1}} dt = 1-(\frac{\beta}{x})^\alpha$$
+
+
+(b) Write an algorithm using the CDF inverse method to generate random numbers from $Pareto(\alpha = 5, \beta = 1)$
+$$u = 1-(\frac{\beta}{x})^\alpha$$
+$$1-u = (\frac{\beta}{x})^\alpha$$
+$$\frac{log(1-u)}{\alpha} = log(\beta)-\log(x)$$
+$$log(\beta) - \frac{log(1-u)}{\alpha} = log(x)$$
+$$x = e^{log(\beta) - \frac{log(1-u)}{\alpha}}$$
+
+```{r}
+
+Pareto <- function(n){
+  
+  u <- runif(n)
+  return(exp(log(1) - (log(1-u)/5)))
+  
+}
+
+```
+
+
+(c) Write R code to generate 10,000 random numbers and draw a EDF plot.
+
+```{r}
+result <- Pareto(10000)
+plot(ecdf(result))
+```
 
 
 
