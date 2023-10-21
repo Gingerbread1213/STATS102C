@@ -1,0 +1,122 @@
+---
+title: "Note 6"
+author: "Haojie Liu"
+date: "2023-10-17"
+output: pdf_document
+---
+
+### Convolution Methods
+
+$$x_i\sim Ber(p)$$
+$$\Sigma x_i \sim Binomial(n,p)$$
+$$x_i\sim Geo(p)$$
+$$\Sigma x_i \sim NB(n,p,r)$$
+
+$$x_i \sim Possion(\lambda_i)$$
+$$\Sigma x_i \sim Possion(\Sigma \lambda_i)$$
+
+$$x \sim X^2_{(1)}$$
+$$\Sigma x_i \sim X^2_{(n)}$$
+
+### Composition Methods
+$$z\sim N(0,1)$$
+$$v=z^2\sim X^2_{(1)}$$
+$$V = \Sigma v_i \sim X^2_{(k)}$$
+$$\frac{z}{\sqrt{\frac{V}{k}}}\sim t_k$$
+$$U\sim X^2_{(n)}$$
+$$\frac{\frac{V}{k}}{\frac{U}{n}}\sim F_{k,n}$$
+
+### Transformation of Random Variable
+
+
+$$x\sim f_X(x)$$
+$$y = h(x)\;\;\;c.t.: h(t) \;must\;be\;one-to-one\;function$$
+$$x=h^{-1}(y)=g(y)$$
+
+1. $y\sim f_Y(y)$\newline
+2. compute $h^{-1}y = g(y)$\newline
+3. deliver $x=g(y)$\newline
+
+
+To find $f_Y(y)$:\newline
+
+scenario 1:\newline
+
+
+$$F_Y(y)=P(Y\le y) = P(h(x)\le y) = P_X(X\le h^{-1}(y))=P_X(X\le g(y))=F_X(g(y))$$
+$$\frac{d}{dy}F_Y(y) = g'(y)f_X(g(y))=f_Y(y)$$
+
+scenario 2:\newline
+
+$$F_Y(y) = P_Y(Y\le y) = P(h(x)\le y) = P(X >h^{-1}(y)) = P_X(X>g(y)) = 1-F_X(g(x))$$
+$$\frac{d}{dy}F_Y(y) = -g'(y)f_X(g(y))=f_Y(y)$$
+
+universal:\newline
+
+$$f_Y(y)=|g'(y)|f_X(g(y))$$
+
+**Ex:**
+$$x\sim unif(0,1)$$
+$$1-x\sim unif(0,1)$$
+$$y=h(x) = 1-x\sim unif(0,1)$$
+$$h^{-1}(y) = 1-y=g(y)$$
+$$f_Y(y)=|-1|f_X(1-y) = 1\sim unif(0,1)$$
+**Ex:**
+
+$$X\sim N(0,1)$$
+$$f(x) = \frac{1}{\sqrt{2\pi}}e^{-\frac{x^2}{2}}$$
+$$y = h(x) = x^2$$
+$$x = h^{-1}(y) = \pm\sqrt{y}=g(y)$$
+$$f_Y(y) = |\frac{1}{2}y^{-\frac{1}{2}}|\frac{1}{\sqrt{2\pi}}e^{-\frac{y}{2}}$$
+For $X^2_{(k)}$, $f(x) = \frac{1}{2^{\frac{k}{2}}\Gamma(\frac{k}{2})}x^{\frac{k}{2}-1}e^{\frac{-x}{2}}$
+
+$$k=1; f(x|k=1) = \frac{1}{\sqrt{2\pi}}x^{-\frac{1}{2}}e^{\frac{-x}{2}}$$
+
+### Mixture Models
+
+$$f_Y(y) = \frac{1}{2}f_+(y) + \frac{1}{2}f_-(y)$$
+$$f(y) = \Sigma\theta_if_i(y);\;\Sigma\theta_i =1$$
+
+**Ex:**\newline
+
+$$f_X(x) = \frac{1}{2}f_1(x) + \frac{1}{2}f_2(x)$$
+$$f_1(x) = N(0,1)$$
+$$f_2(x) = N(3,1)$$
+1. Verify if $f(x) \ge 0$\newline
+2. $\int^\infty_{-\infty} f(x)dx =1$
+
+**Ex:**
+$$f(x) \sim N(0,1)$$
+$$f(y) \sim N(0,1)$$
+$$f_{XY}(x,y) = f(x)f(y) = \frac{1}{\sqrt{2\pi}}e^{-\frac{x^2+y^2}{2}}$$
+
+$$r = h_1(x,y) = \sqrt{x^2+y^2}$$
+$$\theta = h_2(x,y) = tan^{-1}(\frac{y}{x})$$
+$$x = h^{-1}(r,\theta) = g(r,\theta) = r\cos(\theta)$$
+$$y = g_2(r,\theta)=r\sin(\theta)$$
+$$r^2 = x^2+y^2$$
+$$\tan(\theta) = \frac{y}{x}$$
+$$\cos(\theta) = \frac{x}{r}$$
+$$\sin(\theta) = \frac{y}{r}$$
+
+$$f_{R,\theta}(r,\theta) = f_{xy}(g_1(r,\theta), g_2(r,\theta))|J|$$
+$$J = \begin{pmatrix}\frac{dg_1(r,\theta)}{dr}&\frac{dg_1(r,\theta)}{d\theta}\\\frac{dg_2(r,\theta)}{dr}&\frac{dg_2(r,\theta)}{d\theta}\end{pmatrix} = \begin{pmatrix}\cos\theta&-r\sin\theta\\\sin\theta&-r\cos\theta\end{pmatrix}$$
+$$|J|=r\cos^2\theta+r\sin^2\theta = r$$
+$$\frac{1}{\sqrt{2\pi}}e^{-\frac{r^2\cos^2\theta+r^2\sin^2\theta}{2}}r = \frac{1}{\sqrt{2\pi}}e^{-\frac{r^2}{2}}r$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

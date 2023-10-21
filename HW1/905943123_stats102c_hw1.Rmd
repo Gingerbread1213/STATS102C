@@ -77,8 +77,15 @@ paste("The probability that the next call occurs in less than 5 seconds is", 1-e
 (e) Use rexp function in R to generate 1000 samples with the $\lambda$ you derived from (d), and then draw a EDF plot with ecdf function. Finally, add confidence interval to your EDF plot.
 
 ```{r}
-sample <- rexp(1000, 4)
-plot(ecdf(sample))
+
+samples <- rexp(1000, rate = 4)
+ecdf_func <- ecdf(samples)
+plot(ecdf_func, main="Empirical Cumulative Distribution Plot", xlab="Time", ylab="ECDF")
+ci <- qnorm(0.975) * sqrt((ecdf_func(samples) * (1 - ecdf_func(samples))) / length(samples))
+sorted_samples <- sort(samples)
+lines(sorted_samples, ecdf_func(sorted_samples) + ci, col="red", lty=2)
+lines(sorted_samples, ecdf_func(sorted_samples) - ci, col="darkgreen", lty=2)
+
 ```
 
 
@@ -127,6 +134,13 @@ sample_exp <- function(lambda, eta, n){
 
 ```{r}
 result <- sample_exp(3,2,10000)
+
+hist(result, breaks = 50, probability = TRUE,
+     main = "Shifted Exponential Distribution (Rate=3, Shift=2)", 
+     xlab = "Value", 
+     ylab = "Density", 
+     col = "darkgreen")
+curve(3 * exp(-3 * (x - 2)), add = TRUE, col = "red", lwd = 2)
 ```
 
 
@@ -134,14 +148,11 @@ result <- sample_exp(3,2,10000)
 
 ```{r}
 
-# Theoretical quantiles
 p <- seq(0, 1, by = 0.01)
 theoretical_quantiles <- 2 - log(1 - p) / 3
 
-# Sample quantiles
 sample_quantiles <- quantile(result, probs = p)
 
-# QQ-plot
 plot(theoretical_quantiles, sample_quantiles, main = "QQ-Plot",
      xlab = "Theoretical Quantiles", ylab = "Sample Quantiles", pch = 16, col = "blue")
 abline(a = 0, b = 1, col = "red", lwd = 2)
@@ -157,6 +168,7 @@ $$x > \beta$$
 (a) Find the cumulative density function F(x)
 
 $$F(x) = \int^x_\beta\frac{\alpha\beta^\alpha}{t^{\alpha+1}} dt = 1-(\frac{\beta}{x})^\alpha$$
+$$x > \beta$$
 
 
 (b) Write an algorithm using the CDF inverse method to generate random numbers from $Pareto(\alpha = 5, \beta = 1)$
@@ -182,7 +194,7 @@ Pareto <- function(n){
 
 ```{r}
 result <- Pareto(10000)
-plot(ecdf(result))
+plot(ecdf(result),main="Empirical Cumulative Distribution Plot", xlab="Value", ylab="ECDF")
 ```
 
 
