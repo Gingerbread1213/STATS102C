@@ -1,0 +1,47 @@
+---
+title: "Note 8"
+author: "Haojie Liu"
+date: "2023-10-24"
+output: pdf_document
+---
+
+From last time:
+
+$$\Theta = \int_xg(x)f(x)dx$$
+$$x_1,..,x_n\sim f(x)$$
+$$\hat\theta\frac{\Sigma g(x_1)}{m}$$
+$$Var(\hat \theta) = \frac{\sigma^2}{m}$$
+$$\hat\sigma^2 = \frac{\Sigma(g(x)-\bar g(x))^2}{m}$$
+
+### Estimate $Var(\hat\theta_{MC})$ by bootstrap
+
+Antithetic variable 
+$$x_1,...x_m\sim f(x)$$
+$$u_1,...u_m\sim Unif(0,1)$$
+$$Y=g(F^{-1}(u)) = h(u)$$
+$$Y' = g(F^{-1}(u)) = h(1-u)$$
+$$corr(Y,Y') \le 0$$
+$$u_1,...u_m\sim Unif(0,1)$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

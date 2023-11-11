@@ -1,0 +1,109 @@
+---
+title: "Note 8"
+author: "Haojie Liu"
+date: "2023-10-24"
+output: pdf_document
+---
+
+From last time:
+
+$$f(\theta) = \int^\infty_0 f(r,\theta)dr$$
+$$f_R(r) = \int^{2\pi}_0 f(r,\theta)d\theta$$
+
+### Monte Carlo Integration
+
+If we have 
+
+$$\int g(x) dx = \theta$$
+
+Sampling approach
+
+$$x_1,...,x_m\sim f(x)$$
+
+use this kind of method to estimate $\theta$
+
+$$\theta= E(x)=\int^\infty_{-\infty}xf(x)dx$$
+$$E(x^2)=\int^\infty_{-\infty}x^2f(x)dx$$
+$$\theta = E(g(x)) = \int^\infty_{-\infty}g(x)f(x)dx = \mu$$
+
+**By LLN**
+
+$$lim_{n\to \infty}P(|\bar x-\mu|<\epsilon) =1$$
+$$\bar g(x) = \frac{\Sigma g(x_i)}{m} = \hat\theta$$
+$$lim_{m\to \infty}P(|\hat\theta -\theta|<\epsilon) =1$$
+### Simple Monte Carlo Integration
+
+$$\theta = \int^1_0 g(x)dx = \int^1_0 g(x) 1dx$$
+
+Then Generate X by Unif(0,1)
+
+$$\hat \theta=\frac{\Sigma g(x_i)}{m}$$
+
+**Ex:**
+
+$$\theta = \int^1_0e^{-x^2}dx$$
+$$\hat \theta=\frac{\Sigma e^{-x^2}}{m}$$
+
+$$\theta = \int^b_ag(x)dx = \int_a^bg(x)\frac{b-a}{b-a}dx = b-a\int_a^bg(x)\frac{1}{b-a}dx = (b-a)E_U[g(x)]$$
+$$\hat \theta=(b-a)\frac{\Sigma g(x_i)}{m}$$
+Is $\hat \theta$ a consistent estimator?
+
+$$MSE(\hat\theta) = Var(\hat\theta)+bias^2 = Var(\hat\theta) + [E(\hat\theta)-\theta]^2$$
+$$E[\bar g(x)] = E[\frac{\Sigma g(x_i)}{m}] = E[g(x)]=\theta$$
+$$\theta -\theta = 0: \;Unbiased$$
+$$Var(\hat \theta) = Var[\frac{\Sigma g(x_i)}{m}] = \frac{1}{m^2}Var[g(x)]=\frac{1}{m^2}\{E[g^2(x)-E[g(x)]^2]\}$$
+$$=\frac{1}{m}\{\int g^2(x)f(x)dx-\theta^2\}$$
+To make the Variance small, we have many ways:
+
+1. $m\to \infty$
+2. find $f(x)$ such that $\int g^2(x)f(x)dx\simeq\theta^2$
+
+**Ex:**
+
+$$F_X(x)=\int^x_{-\infty}\frac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}dt=\theta$$
+
+If $x>0$
+
+$$F_X(x)=0.5+\int^x_{0}\frac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}dt$$
+$$F_X(x)=0.5+x\int^x_0\frac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}\frac{1}{x}dt$$
+$$F_X(x) = 0.5+x\frac{\Sigma\frac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}}{m}$$
+If $x<0$
+
+$$F_X(x) = \int^x_{-\infty}f(t)dt$$
+$$F_X(x) =1-[0.5+|x|\int^{|x|}_0\frac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}\frac{1}{x}dt]$$
+
+### Change of Variable
+
+Let $x/x$, set $y=\frac{t}{x}$ and $dt=xdy$
+
+$$\int^1_0\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(xy)^2}xdy$$
+$$\frac{x}{\sqrt{2\pi}}\int^1_0e^{-\frac{1}{2}(xy)^2}1dy$$
+$$\theta = \Sigma\frac{e^{-\frac{1}{2}(xy_i)^2}}{m}$$
+
+### Hit-or-Miss Apporach
+
+$$X_1,X_2..,X_n\sim N(0,1)$$
+$$\hat F_X(x)=\frac{\Sigma I(X_i\le x)}{n}$$
+
+To conclude the both method:
+
+$$Var(\hat F_X(x)) = \hat F_X(x)[1-\hat F_X(x)]\frac{1}{n}$$
+$$\sqrt{Var(\hat F_X(x))} = SE[\hat F_X(x)]$$
+$$SE(\hat \theta)=\sqrt{Var(\hat \theta)} = \sqrt{\frac{1}{m}\sigma^2}$$
+$$\hat\sigma^2_{MLE}\to \sigma^2$$
+$$\hat\sigma^2_{MLE} = \frac{\Sigma[g(x_i)-\bar g(x)]^2}{m}$$
+$$SE(\hat \theta) = \sqrt{\frac{\Sigma[g(x_i)-\bar g(x)]^2}{m^2}} = \frac{\hat \sigma_{MLE}}{\sqrt{m}}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
