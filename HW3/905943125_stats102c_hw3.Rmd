@@ -9,6 +9,7 @@ output: pdf_document
 library(tidyverse)
 library(ggplot2)
 library(reshape2)
+library(boot)
 ```
 
 
@@ -72,6 +73,9 @@ standarize <- function(X, mu, covmat){
 ```{r}
 df <- standarize(sample, mu,covmat)
 pairs(df)
+
+colMeans(df)
+cor(df)
 ```
 Since all of the scatter plots looks randomly spread around mean equals 1, we can verify that the algorithm works at standarize the data from problem 1.
 
@@ -115,7 +119,7 @@ mc2 <- function(m){
 ```{r}
 means <- replicate(1000,mc2(1000))
 true_mean <- integrate(function(x) sqrt(x) * 1/3 * exp(-1/3 * x), lower = 0, upper = Inf)$value
-CI <- list(means[1,] + qnorm(0.975)*means[2,], means[1,] - qnorm(0.975)*means[2,])
+CI <- list(means[1,] + qnorm(0.975)*means[2,]/sqrt(1000), means[1,] - qnorm(0.975)*means[2,]/sqrt(1000))
 result <- logical(0)
 for (i in 1:1000) {
   if(true_mean>CI[[1]][i]){
@@ -126,7 +130,6 @@ for (i in 1:1000) {
     result <- c(result,TRUE)
   }
 }
-
 mean(result)
 ```
 
@@ -135,7 +138,6 @@ Since all we have all TURE inside the result vector, we can tell that all of the
 ### Problem 4: Find the air-conditioning data set aircondit from the boot package. The data includes the 12 time intervals in hours between successive failures of the air-conditioning equipment. Assume that the time intervals between failures follow an exponential distribution with the hazard rate $\lambda$. Please use bootstrap to estimate the bias and standard error of $\hat\lambda_{MLE}$.
 
 ```{r}
-library(boot)
 
 # By MLE, we can estimate our lambda as the following:
 MLE_lambda <- function(df, index){
@@ -150,12 +152,6 @@ boot(aircondit, MLE_lambda, R = 10000)
 
 ### Problem 5: Suppose X is a random variable from Beta($\alpha$ = 3, $\beta$ = 2).
 (a) Write R code to compute the Monte Carlo estimator of the CDF. 
-
-$$f(x) = \frac{x^{\alpha -1}(1-x)^{\beta-1}}{B(\alpha,\beta)} = \frac{x^2(1-x)}{1/12}$$
-
-$$F(x) = \int^x_012t^2(1-t) dt = 4x^3-3x^4$$
-$$u = 4x^3-3x^4$$
-
 
 ```{r}
 
@@ -176,22 +172,13 @@ hist(mc_estimates)
 
 ```{r}
 
-hit_or_miss <- function(x, alpha, beta, n) {
-  hits <- 0
-  for (i in 1:n) {
-    u <- runif(1)
-    y <- dbeta(u, alpha, beta)
-    v <- runif(1, 0, max(dbeta(seq(0, 1, length.out = 1000), alpha, beta)))
-    if (v <= y) {
-      hits <- hits + (u <= x)
-    }
-  }
-  return(hits / n)
+hit_or_miss <- function(x, z, alpha, beta) {
+  beta_sample <- rbeta(length(z), alpha, beta)
+  mean(beta_sample < x)
 }
+hit_or_miss_estimates<- sapply(seq(0.1, 0.9, by = 0.1), hit_or_miss, z=runif(5000), alpha=3, beta=2)
 
-hit_or_miss_estimates <- sapply(seq(0.1, 0.9, by = 0.1), hit_or_miss, alpha = 3, beta = 2, n = 1000)
 hist(hit_or_miss_estimates)
-
 ```
 
 
@@ -209,7 +196,9 @@ comparison <- data.frame(
   Exact = exact_cdf
 )
 
-comparison %>% 
+comparison
+
+comparison %>%
   melt(id.vars = "x")%>% 
   ggplot(aes(x = x,
              y = value,
