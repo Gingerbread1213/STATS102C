@@ -15,6 +15,12 @@ library(truncnorm)
 
 (a) Compute the Monte Carlo estimate of $\theta$ without any means of variance reduction. 
 
+  1. Define the Function: You've already defined the function fx(x) = x * exp(-3 * x).
+  2. Generate Uniform Random Numbers: Generate a large number of uniform random numbers over the interval [0, 2].
+  3. Apply the Function to Random Numbers: Apply fx to each of these random numbers.
+  4. Calculate the Average: Compute the average of these function values.
+  5. Multiply by the Length of the Interval: Multiply this average by the length of the interval (which is 2 in this case) to get the estimate of the integral.
+
 ```{r}
 fx <- function(x) { x * exp(-3 * x) }
 
@@ -22,11 +28,19 @@ m <- 10000
 u <- runif(m, 0, 2)
 mc1_estimates <- fx(u) 
 
-theta_mc1 <- mean(mc1_estimates)
-
+theta_mc1 <- mean(mc1_estimates)*2
+theta_mc1
 ```
 
 (b) Compute the Monte Carlo estimate of $\theta$ using the antithetic variate approach.
+
+  1. Define the Function: The function fx(x) = x * exp(-3 * x) is given.
+  2. Generate Uniform Random Numbers: Generate a set of uniform random numbers over the interval [0, 2], but only half the total number of desired samples.
+  3. Create Antithetic Variates: For each random number u, calculate its antithetic variate v = 2 - u. This exploits the symmetry of the uniform distribution over [0, 2].
+  4. Combine Original and Antithetic Samples: Combine the original samples and their antithetic counterparts into one dataset.
+  5. Apply the Function to Combined Samples: Apply fx to each of these combined samples.
+  6. Calculate the Average: Compute the average of these function values.
+  7. Multiply by the Length of the Interval: Multiply this average by the length of the interval (which is 2) to get the estimate of the integral.
 
 ```{r}
 
@@ -36,13 +50,21 @@ v <- 2 - u  # Antithetic variates
 uv <- c(u, v)
 anti_mc_estimates <- fx(uv)
 
-theta_anti_mc <- mean(anti_mc_estimates)
+theta_anti_mc <- mean(anti_mc_estimates)*2
 
-
+theta_anti_mc
 ```
 
 
 (c) Compute the Monte Carlo estimate of $\theta$ using the control variate approach.
+
+  1. Define Functions: You've defined f(u) = exp(u) as the control variate function and g(u) = u * exp(-3 * u) as the target function.
+  2. Initial Sampling: You generate uniform random samples u over [0, 2] and compute A = g(u) and B = f(u).
+  3. Calculate the Coefficient a: The coefficient a is calculated to minimize the variance of the estimator.
+  4. New Sampling for Estimation: You generate a new set of uniform random samples u.
+  5. Estimate Without and With Control Variates: T1 is the estimate of the integral of g(u) over [0, 2], multiplied by 2 (the length of the interval). T2 is the improved estimate using the control variate technique.
+  6. Calculate the Mean of Both Estimates: You calculate the mean of T1 and T2, which are the final estimates without and with control variates, respectively.
+  7. Variance Reduction Calculation: Finally, you calculate the variance reduction achieved by the control variates method.
 
 ```{r}
 f <- function(u){
@@ -55,19 +77,24 @@ g <- function(u){
 u <- runif(10000, 0, 2)
 B <-f(u)
 A <-g(u)
-cor(A,B)
 
 a <- -cov(A,B)/var(B)
 u <- runif(10000, 0, 2)
-T1 <- g(u)
-T2 <- T1 + a * (f(u) - (1 - exp(-1)) )
+T1 <- g(u)*2
+T2 <- T1 + a * (f(u) - mean(B))
 cbind(mean(T1), mean(T2))
+
 con_var <- (var(T1) - var(T2))/var(T1)
 con_var
 
 ```
 
 (d) Compute the Monte Carlo estimate of $\theta$ using the stratified sampling approach.
+
+  1. Initialize Parameters: Set the total number of samples m and the number of strata n_strata.
+  2. Initialize Storage for Stratified Estimates: Create a numeric vector stratified_estimates to store the mean estimates from each stratum.
+  3. Stratified Sampling Loop: For each stratum, calculate the lower and upper bounds, generate uniform random samples within these bounds, apply the function fx to these samples, and store the mean of these function values.
+  4. Calculate the Overall Estimate: Average the stratified means and multiply by the length of the interval (which is 2 in this case).
 
 ```{r}
 m <- 10000
@@ -81,9 +108,9 @@ for (i in 1:n_strata) {
     stratified_estimates[i] <- mean(fx(u))
 }
 
-theta_stratified <- mean(stratified_estimates)
+theta_stratified <- mean(stratified_estimates)*2
 
-
+theta_stratified
 ```
 
 
@@ -92,10 +119,7 @@ theta_stratified <- mean(stratified_estimates)
 ```{r}
 
 theta_theoretical <- integrate(fx, lower = 0, upper = 2)$value
-squared_deviation <- function(x) {
-  (f(x) - theta_theoretical) ^ 2
-}
-variance_theoretical <- integrate(squared_deviation, lower = 0, upper = 2)$value
+variance_theoretical <- integrate(function(x) (fx(x) - theta_theoretical)^2, lower = 0, upper = 2)$value
 
 
 data.frame(
@@ -111,7 +135,7 @@ data.frame(
 $$t_1(x) = \frac{2e^{-0.5}}{\pi(1+x^2)},\;where\;0<x<1$$
 
 ```{r}
-f <- function(u){
+t1 <- function(u){
   (2*exp(-0.5))/(pi*(1+u^2))
 }
 g <- function(u){
@@ -119,34 +143,35 @@ g <- function(u){
 }
 
 u <- runif(10000, 0, 1)
-B <-f(u)
+B <-t1(u)
 A <-g(u)
-a <- -cov(A,B)/var(B)
-u <- runif(10000, 0, 1)
+a1 <- -cov(A,B)/var(B)
+u <- runif(10000, 0, 1) 
 T1 <- g(u)
-T2 <- T1 + a * (f(u) - (1 - exp(-1)) )
-var(T2)
+T2 <- T1 + a1 * (t1(u) - mean(B))
+mean(T1)
+con_var <- (var(T1) - var(T2))/var(T1)
+con_var
 ```
 
 
 $$t_2(x) = \frac{e^{-x}}{1-e^{-1}},\;where\;0<x<1$$
 
 ```{r}
-f <- function(u){
+t2 <- function(u){
   (exp(-u))/(1-exp(-1))
-}
-g <- function(u){
-  exp(-u)/(1+u^2)
 }
 
 u <- runif(10000, 0, 1)
-B <-f(u)
+B <-t2(u)
 A <-g(u)
-a <- -cov(A,B)/var(B)
+a2 <- -cov(A,B)/var(B)
 u <- runif(10000, 0, 1)
 T1 <- g(u)
-T2 <- T1 + a * (f(u) - (1 - exp(-1)) )
-var(T2)
+T2 <- T1 + a2 * (t2(u) - (mean(B)))
+mean(T1)
+con_var <- (var(T1) - var(T2))/var(T1)
+con_var
 ```
 
 
@@ -160,7 +185,8 @@ mc1_estimates <- g(u)
 var(mc1_estimates)
 
 ```
-Since the control variate method gives me a smaller variance, I can say that my estimator are more efficient than the simple Monte Carlo estimator.
+
+Since both of the control variance reductions are larger than zero and above 90, I can say that my estimator are more efficient than the simple Monte Carlo estimator.
 
 
 ### Problem 3: Suppose $X\sim f(x)$, Let $\theta = \int g(x)f(x)dx = E_f[g(X)]$. We draw m iid copies $X_1,...X_m$ from $\phi(x)$, which is different from $f(x)$, and define $W(x) =\frac{f(x)}{\phi(x)}$
@@ -304,16 +330,16 @@ E1 <- function(n){
   X <- rexp(n,2)
   r1 <- function(x){exp(-2*x)}
   W <- qx(X)/r1(X)
-  return(mean(W*X^2))
+  return(sum(W*X^2)/sum(W))
   
 }
 
 E2 <- function(n){
   
-  X <- rexp(n,0.5)
+  X <- rgamma(n,0.5,2)
   r2 <- function(x){x^(-1/2) * exp(-x/2)}
   W <- qx(X)/r2(X)
-  return(mean(W*X^2))
+  return(sum(W*X^2)/sum(W))
   
 }
 
@@ -322,7 +348,7 @@ E3 <- function(n){
   X <- abs(rcauchy(n, 2))
   r3 <- function(x){(2 * pi)^(-1) * (1 + x^2 / 4)^(-1)}
   W <- qx(X)/r3(X)
-  return(mean(W*X^2))
+  return(sum(W*X^2)/sum(W))
   
 }
 
@@ -334,8 +360,17 @@ E3 <- function(n){
 
 ```{r}
 
+norm_const <- integrate(Vectorize(qx), lower = 0, upper = Inf)$value
+
+normalized_qx <- function(x) {
+  qx(x) / norm_const
+}
+
+theoretical_value <- integrate(Vectorize(function(x) x^2 * normalized_qx(x)), lower = 0, upper = Inf)$value
+
+
 data.frame(
-  theoretical_value = integrate(function(x) x^2 * qx(x), lower = 0, upper = Inf)$value,
+  theoretical_value,
   E1 = E1(10000),
   E2 = E2(10000),
   E3 = E3(10000)
@@ -346,14 +381,14 @@ data.frame(
 
 (c) Which trial distribution above is more efficient? Explain.
 
-E2 is the closest to the theoretical value, making it the most accurate in this case. Both E1 and E3 significantly overestimate the value.
+Based on the given results, the trial distribution used in E1 appears to be the most efficient as its estimate (0.888646) is closest to the theoretical value (0.8913028), indicating higher accuracy compared to the other two methods.
 
 (d) Estimate the normalizing constant of $q(x$).
 
 ```{r}
 Q <- integrate(qx, lower = 0, upper = Inf)
-Z <- 1 / Q$value
-Z
+
+Q$value
 ```
 
 
